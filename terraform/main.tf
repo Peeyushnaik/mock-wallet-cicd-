@@ -1,11 +1,8 @@
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  config_path = "/var/jenkins_home/.kube/config"
 }
 
-# ----------------------------
-# Deployment
-# ----------------------------
-resource "kubernetes_deployment" "mock_wallet" {
+resource "kubernetes_deployment_v1" "mock_wallet" {
   metadata {
     name = "mock-wallet"
     labels = {
@@ -32,30 +29,10 @@ resource "kubernetes_deployment" "mock_wallet" {
       spec {
         container {
           name  = "mock-wallet"
-          image = "mock-wallet"
-
-          image_pull_policy = "Never"
+          image = "mock-wallet:latest"
 
           port {
             container_port = 3000
-          }
-
-          readiness_probe {
-            http_get {
-              path = "/health"
-              port = 3000
-            }
-            initial_delay_seconds = 5
-            period_seconds        = 5
-          }
-
-          liveness_probe {
-            http_get {
-              path = "/health"
-              port = 3000
-            }
-            initial_delay_seconds = 10
-            period_seconds        = 10
           }
         }
       }
@@ -63,10 +40,7 @@ resource "kubernetes_deployment" "mock_wallet" {
   }
 }
 
-# ----------------------------
-# Service (NodePort)
-# ----------------------------
-resource "kubernetes_service" "mock_wallet_service" {
+resource "kubernetes_service_v1" "mock_wallet_service" {
   metadata {
     name = "mock-wallet-service"
   }
