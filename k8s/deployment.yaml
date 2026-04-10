@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
         - name: mock-wallet
-          image: peeyushnaik/mock-wallet:latest
-          imagePullPolicy: Always
+          image: mock-wallet                # ✅ use local image
+          imagePullPolicy: Never           # ✅ don't pull from Docker Hub
           ports:
             - containerPort: 3000
 
