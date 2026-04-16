@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/your-username/mock-wallet-cicd'
+                git 'https://github.com/Peeyushnaik/mock-wallet-cicd'
             }
         }
 

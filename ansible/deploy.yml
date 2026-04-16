@@ -1,0 +1,17 @@
+- name: Deploy Wallet App
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Delete old deployment
+      command: kubectl delete deployment mock-wallet
+      ignore_errors: yes
+
+    - name: Apply Deployment
+      command: kubectl apply -f ../k8s/deployment.yaml
+
+    - name: Apply Service
+      command: kubectl apply -f ../k8s/service.yaml
+
+    - name: Get Pods
+      command: kubectl get pods

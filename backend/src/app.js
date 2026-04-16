@@ -8,7 +8,7 @@ app.use(express.json());
 // Routes
 app.use("/wallet", walletRoutes);
 
-// Health check (for Docker & Kubernetes)
+// Health check
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });

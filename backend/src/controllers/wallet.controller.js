@@ -1,35 +1,66 @@
-const walletService = require("../services/wallet.service");
+const { v4: uuidv4 } = require("uuid");
 
-exports.createUser = (req, res) => {
-  const id = walletService.createUser();
+const users = {};
+
+const createUser = (req, res) => {
+  const id = uuidv4();
+
+  users[id] = {
+    id,
+    balance: 0,
+    transactions: []
+  };
+
   res.json({ userId: id });
 };
 
-exports.credit = (req, res) => {
-  try {
-    const { userId, amount } = req.body;
-    const txnId = req.headers["idempotency-key"];
+const credit = (req, res) => {
+  const { userId, amount } = req.body;
 
-    const balance = walletService.credit(userId, amount, txnId);
-    res.json({ balance });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  const user = users[userId];
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
   }
+
+  user.balance += amount;
+  user.transactions.push({ type: "credit", amount });
+
+  res.json({ balance: user.balance });
 };
 
-exports.debit = (req, res) => {
-  try {
-    const { userId, amount } = req.body;
-    const txnId = req.headers["idempotency-key"];
+const debit = (req, res) => {
+  const { userId, amount } = req.body;
 
-    const balance = walletService.debit(userId, amount, txnId);
-    res.json({ balance });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  const user = users[userId];
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
   }
+
+  if (user.balance < amount) {
+    return res.status(400).json({ error: "Insufficient balance" });
+  }
+
+  user.balance -= amount;
+  user.transactions.push({ type: "debit", amount });
+
+  res.json({ balance: user.balance });
 };
 
-exports.getBalance = (req, res) => {
-  const balance = walletService.getBalance(req.params.id);
-  res.json({ balance });
+const getBalance = (req, res) => {
+  const user = users[req.params.id];
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({ balance: user.balance });
+};
+
+module.exports = {
+  createUser,
+  credit,
+  debit,
+  getBalance
 };
