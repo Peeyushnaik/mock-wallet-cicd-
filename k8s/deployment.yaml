@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: wallet
-          image: docker.io/library/wallet-service:latest
-          imagePullPolicy: Never
+          image: peeyushnaik/mock-wallet:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
