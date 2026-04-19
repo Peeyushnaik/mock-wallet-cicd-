@@ -7,11 +7,12 @@ pipeline {
 
     stages {
         stage('Clone') {
-            steps {
-                git 'https://github.com/Peeyushnaik/mock-wallet-cicd'
-            }
-        }
-
+           steps {
+               git branch: 'main',
+                 url: 'https://github.com/Peeyushnaik/mock-wallet-cicd-.git',
+                 credentialsId: 'github-creds'
+    }
+}
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE .'
