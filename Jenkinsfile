@@ -2,20 +2,22 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "yourdockerhub/mock-wallet"
+        DOCKER_IMAGE = "peeyushnaik/mock-wallet"   // <-- replace if needed
     }
 
     stages {
+
         stage('Clone') {
-           steps {
-               git branch: 'main',
-                 url: 'https://github.com/Peeyushnaik/mock-wallet-cicd-.git',
-                 credentialsId: 'github-creds'
-    }
-}
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Peeyushnaik/mock-wallet-cicd-.git',
+                    credentialsId: 'github-creds'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                sh 'docker build -t $DOCKER_IMAGE ./backend'
             }
         }
 
